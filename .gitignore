@@ -5,3 +5,4 @@
 *.woff
 *.woff2
 /staging/
+!db.config.ini

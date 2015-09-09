@@ -112,7 +112,7 @@ function count_word($word) {
 
 function query_word($word) {
 	$count = 0;	
-	$query = "SELECT * FROM `words2` WHERE `w_word` = '".$word."'";
+	$query = "SELECT * FROM `dictionary` WHERE `w_word` = '".$word."'";
 	$result = db_query($query);
 	
 	if ($result->num_rows > 0) {

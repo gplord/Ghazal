@@ -3,8 +3,6 @@
 // Global toggle of verbose output of syllable counting algorithm		
 $verbose = false;
 
-$word = "quixotic";
-
 include ('includes/connect.php');
 include('functions.php');
 	
@@ -12,7 +10,7 @@ include('functions.php');
 		$word = $_POST['word'];
 	}
 	
-	$query = "SELECT * FROM `words2` WHERE `w_word` = '".$word."'";
+	$query = "SELECT * FROM `dictionary` WHERE `w_word` = '".$word."'";
     $result = db_query($query);
 	
 	while ($row = mysqli_fetch_assoc($result)) {
@@ -82,7 +80,7 @@ include('functions.php');
 		
 		if ($verbose) echo "We need to match on ".$rhyme_match_string;
 		
-		$query = "SELECT * FROM `words2` WHERE `w_pronounce` LIKE '%".$rhyme_match_string."'";// AND `w_syllables` = ".$row['w_syllables'];
+		$query = "SELECT * FROM `dictionary` WHERE `w_pronounce` LIKE '%".$rhyme_match_string."'";// AND `w_syllables` = ".$row['w_syllables'];
 	    $subresult = db_query($query);
 		
 		if ($verbose) echo "<p>There are " . $subresult->num_rows . " results.</p>\n";
@@ -125,7 +123,7 @@ include('functions.php');
 			
 			echo "We need to match on ".$rhyme_match_string;
 			
-			$query = "SELECT * FROM `words2` WHERE `w_pronounce` LIKE '%".$rhyme_match_string."'";// AND `w_syllables` = ".$row['w_syllables'];
+			$query = "SELECT * FROM `dictionary` WHERE `w_pronounce` LIKE '%".$rhyme_match_string."'";// AND `w_syllables` = ".$row['w_syllables'];
 		    $subsubresult = db_query($query);
 			
 			echo "there are " . $subsubresult->num_rows . " results";
