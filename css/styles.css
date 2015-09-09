@@ -18,10 +18,10 @@ a:hover {
 	color: #fff;
 }
 
-.poem-line {
+.poem-line-free {
 	width: 100%;
 }
-.poem-line-first, .poem-line.line-even {
+.poem-line-first, .poem-line-free.line-even {
 	width: 50%;
 }
 .poem-line-rhyme {
