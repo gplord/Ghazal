@@ -1,0 +1,7 @@
+*.ini
+*.eot
+*.svg
+*.ttf
+*.woff
+*.woff2
+/staging/

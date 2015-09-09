@@ -1,0 +1,75 @@
+body {
+	position: relative;
+	background: #444;
+	color: #ccc;
+    padding-top: 120px;
+	font-family: 'Lato', sans-serif;
+}
+
+input {
+	color: #333;
+}
+
+a {
+	font-weight: bold;
+	color: #fff;
+}
+a:hover {
+	color: #fff;
+}
+
+.poem-line {
+	width: 100%;
+}
+.poem-line-first, .poem-line.line-even {
+	width: 50%;
+}
+.poem-line-rhyme {
+	width: 20%;
+	margin-left: 4px;
+}
+.poem-line-repeat {
+	width: 28%;
+	float:right;
+}
+
+#sidebar {
+	height: 450px;
+	overflow-y: scroll;
+}
+
+input[type="text"] {
+	border: 0;
+}
+input[type="text"]:disabled {
+    background: #aaa;
+}
+
+.couplet {
+	margin-bottom: 1em;
+}
+.couplet input {
+	margin-bottom: .5em;
+}
+
+
+.navbar-header {
+	position: relative;
+}
+.title-tagline {
+	position: absolute;
+	left: -5px;
+	top: 80px;
+	width: 300px;
+}
+.navbar {
+	height: 110px;
+}
+
+.main {
+	min-height: 400px;
+}
+
+.clear {
+	clear: both;
+}
