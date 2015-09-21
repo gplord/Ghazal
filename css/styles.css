@@ -2,7 +2,7 @@ body {
 	position: relative;
 	background: #444;
 	color: #ccc;
-    padding-top: 120px;
+    padding-top: 80px;
 	font-family: 'Lato', sans-serif;
 }
 
@@ -33,12 +33,12 @@ a:hover {
 	float:right;
 }
 
-#sidebar {
+.rhyme-suggestions {
 	height: 450px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
-input[type="text"] {
+#poem input[type="text"] {
 	border: 0;
 }
 input[type="text"]:disabled {
@@ -63,7 +63,6 @@ input[type="text"]:disabled {
 	width: 300px;
 }
 .navbar {
-	height: 110px;
 }
 
 .main {
@@ -72,4 +71,89 @@ input[type="text"]:disabled {
 
 .clear {
 	clear: both;
+}
+
+.ghazal-repeat {
+	background: #605ca8;
+}
+.ghazal-rhyme {
+	background: #216d65;
+}
+
+#poem input[type=text] {
+	background: #222;
+	border: 2px solid #222;
+	color:#fff;
+	padding: 3px;
+}
+#poem input[type=text]:disabled {
+	background: #222;
+}
+#poem input.poem-line-rhyme {	
+	border: 2px solid #216d65;
+}
+#poem input#repeat {
+	border: 2px solid #605ca8;
+}
+#poem input[type=text]:disabled.poem-line-repeat {	
+	background: #505076;
+	border: 2px solid #505076;
+}
+#poem input[type=text].poem-line-rhyme {
+	background:#16544d;
+	border: 2px solid #216d65;
+}
+#poem input[type=text]#rhyme {
+	background: #222;
+}
+
+.ghazal-title {
+	font-size: 24px;
+	margin-bottom: .25em;
+}
+.ghazal-author {
+	font-size: 12px;
+}
+.ghazal-quote {
+	border-left: none;
+	font-style: italic;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	font-size: 13px;
+}
+
+hr {
+	border-top: 1px solid #555;
+}
+
+.poem-authorship {
+	margin-bottom: 1em;
+}
+#poem-title {
+	font-size: 20px;
+	margin-right: 1em;
+	width: 50%;
+}
+
+.couplet {
+	border-bottom: 1px solid #555;
+	padding-bottom: 5px;
+}
+#sidebar-list {
+	background: #555;
+}
+
+#save {
+	display: none;
+	background: #eee;
+	color: #555;
+	padding: 1em;
+}
+#save h4 {
+	font-weight: bold;
+	margin-top: 0;
+}
+#save-poem {
+}
+.has-error #save-email {
+	/*border-width: 2px;*/
 }

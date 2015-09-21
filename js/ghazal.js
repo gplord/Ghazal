@@ -1,8 +1,8 @@
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip({container: 'body', placement: 'right', trigger: 'manual'})
+  $('[data-toggle="tooltip"]').tooltip({container: 'body', placement: 'right', trigger: 'hover'})
 });
 $.each($('.poem-line'), function() {
-  $(this).tooltip({placement: 'right',trigger: 'manual'}).tooltip('show');
+  $(this).tooltip({container: 'body', placement: 'left', trigger: 'manual'}).tooltip('show');
 });
 
 $(document).ready(function(){
@@ -13,9 +13,14 @@ var autoFillInterval = 250;  //time in ms, 5 second for example
 var rhymeMatches = [];
 
 //on keyup, start the countdown
-$('.poem-line, .poem-line-first').keyup(function(){
+$('.poem-line-free, .poem-line-first, .poem-line-rhyme').keyup(function(){
     clearTimeout(typingTimer);
-    typingTimer = setTimeout(autoFill, autoFillInterval, $(':focus').data("line-no"));
+    if ($(this).val().length) {
+      typingTimer = setTimeout(autoFill, autoFillInterval, $(':focus').parent().data("line-no"));
+    } else {
+      $(this).data("block-syllables",0);      
+      updateLineSyllableCount($(this));
+    }
 });
 
 //on keydown, clear the countdown 
@@ -26,7 +31,12 @@ $('.poem-line').keydown(function(){
 
 $('#repeat').keyup(function() {
     clearTimeout(typingTimer);
-    typingTimer = setTimeout(autoFillRepeat, autoFillInterval);
+    if ($(this).val().length) {
+      typingTimer = setTimeout(autoFillRepeat, autoFillInterval);
+    } else {
+      $(this).data("block-syllables",0);      
+      updateLineSyllableCount($(this));
+    }
 });
 $('#repeat').keydown(function() {
     clearTimeout(typingTimer);
@@ -35,12 +45,24 @@ $('#repeat').keydown(function() {
 
 function autoFillRepeat() {  
     //alert($('#repeat').val());
-    $('.poem-line-repeat').val($('#repeat').val());
+    autoFill();
+    $('.poem-line-repeat').val($('#repeat').val())
+    $('.poem-line-repeat').data("block-syllables", $('#repeat').data("block-syllables"));
+    $('.poem-line-repeat').tooltip('hide')
+        .attr('data-original-title', $('#repeat').data("block-syllables"))
+        .tooltip('fixTitle')
+        .tooltip('show');
+    
 }
 
 $('#rhyme').keyup(function() {
     clearTimeout(typingTimer);
-    typingTimer = setTimeout(autoFillRhyme, autoFillInterval);
+    if ($(this).val().length) {
+      typingTimer = setTimeout(autoFillRhyme, autoFillInterval);
+    } else {
+      $(this).data("block-syllables",0);      
+      updateLineSyllableCount($(this));
+    }
 });
 $('#rhyme').keydown(function() {
     clearTimeout(typingTimer);
@@ -49,98 +71,175 @@ $('#rhyme').keydown(function() {
 
 function autoFillRhyme() {  
     
-    var $focused = $(':focus');
+    autoFill();
+    var $focused = $('#rhyme');
     $.post( "rhyme-word.php", { word:$focused.val() }, function( data ) {
-      $( "#testajax" ).html( data );
-      //console.log(data);
+
       rhymeMatches = $.parseJSON( data.toLowerCase() );
-      //console.log(rhymeMatches[1]);
+      console.log(rhymeMatches);
+      //console.log(rhymeMatches.quality);
       
-      $( ".poem-line-rhyme" ).autocomplete({
-        source: rhymeMatches
-      });
-      
-      //$("#sidebar").html (rhymeMatches);
-      var sidebarList = $("#sidebar-list");
-      sidebarList.empty();
-      $.each(rhymeMatches, function(k,v) {
-          sidebarList.append("<li>" + v + "</li>");
-      });
+      if (rhymeMatches && rhymeMatches.words && rhymeMatches.quality && rhymeMatches.quality > 0) {
+    
+        $( ".poem-line-rhyme" ).autocomplete({
+          source: rhymeMatches.words
+        });
+        
+        var sidebarList = $("#sidebar-list");
+        sidebarList.empty();
+  
+          $("#rhyme-placeholder").css("display","none");
+          $(".rhyme-title").text('Rhyming Suggestions');
+          $(".rhyme-title").append(" for &quot;<strong>" + ($focused.val()) + "</strong>&quot;");
+          
+          if (rhymeMatches.quality > 1) { // This means "less" quality, where 1 is best 
+            console.log("Not the best rhymes here, yo.");
+          }
+          
+        $.each(rhymeMatches.words, function(k,v) {
+            sidebarList.append("<li>" + v + "</li>");
+        });
+        
+      } else {
+         $("#sidebar-list").empty();
+         $("#rhyme-placeholder").html("<p class='alert alert-danger'>No words were found that matched your rhyming word.</p><p>This might mean:</p> <ul><li>the field is empty</li><li>you entered more than one word, or</li><li>you entered a word not found in the dictionary</li><li>you entered a word that was too long or unique to have rhyming matches</li></ul></p><p>(You can still type your rhyming words manually, or try a different word.)</p>");
+         $("#rhyme-placeholder").css("display","block");
+      }     
       
     });
 
 }
 
 function autoFill (line) {
-        
-    //var poemPart1 = $('.poem-line').val().split(' ');
-    
-    var element = $('*[data-line-no="'+line+'"]');
-    var poem = element.val();
-    console.log(poem);
-    
-    if (element.next().hasClass("poem-line-rhyme")) {
-      
-      poem += " "+element.next().val();
-    }
-    
-    $.post( "count-line.php", { line:poem }, function( data ) {
-      console.log(data);      
-    });
-    
-    /*
-    var $focused = $(':focus');
-    //$('#testajax').load('syllables-line.php', { line: $focused.val() }, function() {
-    $('#testajax').load('count-line.php', { line: $focused.val() }, function() {
-          //$focused.next().children('.tooltip-inner').html($('#testajax').text());
-          //$('#testajax').html($('#'))
-    });
-    */
     
     var $focused = $(':focus');
-    $.post( "count-line.php", { line:$focused.val() }, function( data ) {
-      $( "#testajax" ).html( data );
-    });
-    
-    $.each($('.poem-line'), function(k, v) {
+    var count;
+    $.post( "count-line.php", { line: $focused.val().replace(/(['"])/g, "\\$1") }, function( data ) {
       
-      //$(this).load("syllables-line.php", { line: $(".poem-line").val()});
+      count = data;
+      $focused.data("block-syllables", count);
       
-      var thisthis = $(this);
+      if ($focused.is("#repeat")) {
+        $('.poem-line-repeat').each(function(k,v) {
+          $(this).data("block-syllables",count);
+          $(this).tooltip('hide').attr('data-original-title', count)
+            .tooltip('fixTitle')
+            .tooltip('show');
+          updateLineSyllableCount($(this));
+        });
+      }
       
-      //function(data) {
-//        console.log($(data).find('#return').text());
-        //$(this).attr('title', $(data).find('#return').text());
-//        $(this).next().children('.tooltip-inner').text($(data).find('#return').text());
-  //    });
-  
-      /*
-      //console.log($(this));
-      if (($(this).data("line-no") % 2) == 0) {
-        //$(this).val($(this).val() + " " + last_word);
-        //$(this).next('.line-last-word').css("border","10px solid purple");
-        $(this).val(last_word);
-        console.log($(this));
-      }*/
+      $focused.tooltip('hide')
+        .attr('data-original-title', count)
+        .tooltip('fixTitle')
+        .tooltip('show');
+      
+      updateLineSyllableCount($focused);
       
     });
     
 }
 
+function updateLineSyllableCount(element) {
+  var $focused = element;
+  var lineSyllables = 0;
+      $focused.parent().children('input').each(function(k,v) {
+        lineSyllables += parseInt($(this).data("block-syllables"));
+      });      
+      
+      $focused.parent().data("line-syllables", lineSyllables);
+      $focused.parent().attr('data-original-title',lineSyllables).tooltip('fixTitle').tooltip('show');
+}
+
 $('#btn-add-couplet').click(function() {
   
-  $('#poem').append($( "#couplet-template" ).html());
+  $('#couplets').append($( "#couplet-template" ).html());
   
-  $('#poem').children().last().attr("id","couplet-" + (parseInt($('#poem').data('num-couplets'))+1));
-  $('#poem').children().last().children().first().attr("id","poem-line-" + (parseInt($('#poem').data("num-lines"))+1));
-  $('#poem').children().last().children().last().attr("id","poem-line-" + (parseInt($('#poem').data("num-lines"))+2));
+  $('#couplets').children().last().attr("id","couplet-" + (parseInt($('#poem').data('num-couplets'))+1));
+  $('#couplets').children().last().children().first().attr("id","poem-line-" + (parseInt($('#poem').data("num-lines"))+1));
+  $('#couplets').children().last().children().last().attr("id","poem-line-" + (parseInt($('#poem').data("num-lines"))+2));
   
-  $('#poem').children().last().children().first().data("line-no", (parseInt($('#poem').data("num-lines"))+1));
-  $('#poem').children().last().children().last().data("line-no", (parseInt($('#poem').data("num-lines"))+2));
+  $('#couplets').children().last().children().first().data("line-no", (parseInt($('#poem').data("num-lines"))+1));
+  $('#couplets').children().last().children().last().data("line-no", (parseInt($('#poem').data("num-lines"))+2));
     
   $('#poem').data('num-lines',parseInt($('#poem').data('num-lines'))+2);
   $('#poem').data('num-couplets',parseInt($('#poem').data('num-couplets'))+1);
   
+  autoFillRhyme();
+  autoFillRepeat();
+  
 });
-    
+
+$('#btn-generate').click(function() {
+  
+  var lines = [];
+  $('.poem-line').each(function(k,v) {
+    lines[k] = "";
+    $(this).children('input').each(function(l,w){      
+      lines[k] += $(this).val() + " ";
+    });
+  });
+  
+  $("#my-ghazal .ghazal-title").html($("#poem-title").val());
+  $("#my-ghazal .ghazal-author").html("by " + $("#poem-author").val());
+  
+  $(lines).each(function(k,v) {
+    if (k % 2) {
+      $("#poem-text").children().last().append(v);
+    } else {
+      $("<p class='my-ghazal-couplet'>").html(v + "<br>").appendTo("#poem-text");
+    }
+  });
+
+  $("#save").show();
+  
+});
+
+$( "#save-poem" ).click(function( event ) {
+  if (isEmail($("#poem-email").val())) {
+     $("#poem-email").parent().removeClass("has-error");
+     
+     savePoem();
+     
+  } else {
+    $("#poem-email").parent().addClass("has-error");
+  }
+  event.preventDefault();
+});
+
+function isEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return regex.test(email);
+}
+
+function savePoem() {
+
+  //var poemData = [];
+  poemData = new Object;
+  poemData["poem_title"] = $('#poem-title').val();
+  poemData["poem_author"] = $('#poem-author').val();
+  poemData["poem_email"] = $('#poem-email').val();
+  poemData["poem_text"] = $('#poem-text').html();
+  
+  // Create an associate array here -- to send to php, to the db, to the reply block
+  
+  // $.ajax({
+  //   type: "POST",
+  //   data: {poemData:poemData},
+  //   url: "savepoem.php",
+  //   success: function(reply){
+  //     $('#ajax-reply').html(reply);
+  //   }
+  // });
+  
+  
+  $.post( "savepoem.php", { poemdata:poemData }, function( data ) {
+      
+      $('#ajax-reply').html(data);
+      
+    });
+  
+  
+}
+
 });

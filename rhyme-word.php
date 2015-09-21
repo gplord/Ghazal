@@ -21,9 +21,12 @@ include('functions.php');
 	    if ($verbose) echo "<p><span class='word'>".$word."</span></p>\n";
 	    if ($verbose) echo "<p>" . implode(" &bull; ", $phonemes) . "</p>\n";
 		
-		//echo $row['w_syllables']. " syllables.";	    
 		
-		$vowels_to_match = ($row['w_syllables'] > 2) ? 2 : 1;
+		/*$vowels_to_match = ($row['w_syllables'] > 2) ? 2 : 1;
+		if ($row['w_syllables'] > 3) $vowels_to_match = 3;*/
+		
+		$vowels_to_match = $row['w_syllables'];
+		if ($row['w_syllables'] = 3) $vowels_to_match = 2;
 		if ($row['w_syllables'] > 3) $vowels_to_match = 3;
 		
 		// RULE 1
@@ -36,7 +39,7 @@ include('functions.php');
 			) {
 				
 			$vowels_to_match ++;
-			echo "<p>Using the final-syllable-is-a-vowel rule!</p>\n";
+			if ($verbose) echo "<p>Using the final-syllable-is-a-vowel rule!</p>\n";
 			
 		}
 		
@@ -83,9 +86,14 @@ include('functions.php');
 		$query = "SELECT * FROM `dictionary` WHERE `w_pronounce` LIKE '%".$rhyme_match_string."'";// AND `w_syllables` = ".$row['w_syllables'];
 	    $subresult = db_query($query);
 		
+		
+		$final_words = array();
+		
 		if ($verbose) echo "<p>There are " . $subresult->num_rows . " results.</p>\n";
 						
         if ($subresult->num_rows > 1) {
+			
+			$final_words['quality'] = 1;	// Better quality results.
 			
 			// DROPDOWN
 			//echo "<select name='rhyme-matches'>\n";
@@ -95,7 +103,7 @@ include('functions.php');
 					if ($subrow['w_word'] != $row['w_word']) {
 						// DROPDOWN
 						//echo "<option value='" . $subrow['w_word'] . "'>" . $subrow['w_word'] . "</option>";
-						$final_words[] = $subrow['w_word'];
+						$final_words['words'][] = $subrow['w_word'];
 					}
 				}
 			}		
@@ -104,8 +112,10 @@ include('functions.php');
 			//echo "</select>\n";
 
 		} else {
+			
+			$final_words['quality'] = 2;	// Lower quality results.
 
-			echo "<p><strong>No strong rhyme matches found.</strong></p>\n";
+			if ($verbose) echo "<p><strong>No strong rhyme matches found.</strong></p>\n";
 			
 			// RULE 3
 			// Weaker rhymes -- this is basically trimming off the first phoneme we needed, trying to find matches at one fewer
@@ -121,14 +131,12 @@ include('functions.php');
 			}
 			$rhyme_match_string = implode(" ", $rhyme_match_array);
 			
-			echo "We need to match on ".$rhyme_match_string;
+			//if ($verbose) echo "We need to match on ".$rhyme_match_string;
 			
 			$query = "SELECT * FROM `dictionary` WHERE `w_pronounce` LIKE '%".$rhyme_match_string."'";// AND `w_syllables` = ".$row['w_syllables'];
 		    $subsubresult = db_query($query);
 			
-			echo "there are " . $subsubresult->num_rows . " results";
-							
-			$final_words = array();
+			//if ($verbose) echo "there are " . $subsubresult->num_rows . " results";
 							
 	        if ($subsubresult->num_rows > 1) {
 				
@@ -141,7 +149,7 @@ include('functions.php');
 						if ($subsubrow['w_word'] != $row['w_word']) {
 							// DROPDOWN
 							//echo "<option value='" . $subsubrow['w_word'] . "'>" . $subsubrow['w_word'] . "</option>";
-							$final_words[] = $subsubrow['w_word'];
+							$final_words['words'][] = $subsubrow['w_word'];
 						}
 					}
 				}		
@@ -151,7 +159,8 @@ include('functions.php');
 	
 			} else {
 	
-				echo "<strong>No weaker rhyme matches found.</strong>";
+				$final_words['quality'] = 0;
+				if ($verbose) echo "<strong>No weaker rhyme matches found.</strong>";
 	
 			}
 			
