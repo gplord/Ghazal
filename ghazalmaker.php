@@ -170,7 +170,6 @@
 					</div>
 				</div>
 			</div>
-			<hr>
 			<div id="save" class="form-group">
 				<div id="ajax-reply"></div>
 				<h4>Save your poem</h4>

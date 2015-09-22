@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><?php echo isset($title) ? $title." | Ghazal " : "Ghazal"; ?></title>
+    <title><?php echo isset($title) ? $title." | Ghazal " : "Ghazal Creator"; ?></title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
