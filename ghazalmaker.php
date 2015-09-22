@@ -93,8 +93,8 @@
 					
 				</div>
 				
-				<input type="button" id="btn-add-couplet" value="Add Couplet" />
-				<input type="button" id="btn-generate" value="Generate Finished Poem" />
+				<input type="button" class="btn btn-default" id="btn-add-couplet" value="Add Couplet" />
+				<input type="button" class="btn btn-success" id="btn-generate" value="Generate Finished Poem" />
                 
                 <div id="testajax"></div>      
             </div>

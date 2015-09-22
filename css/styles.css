@@ -157,3 +157,68 @@ hr {
 .has-error #save-email {
 	/*border-width: 2px;*/
 }
+
+/* -- Alternate, Light Theme ----------------------------------- */
+
+body {
+    background: #fff;
+    color: #666;
+}
+.navbar-inverse {
+    background-color: #ddd;
+    border-color: #bbb;
+    z-index: 9999;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #555;
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    color: #333;
+}
+#poem input[type=text] {
+    background: #eee;
+    border: 1px solid #bbb;
+    color: #333;
+}
+#poem input[type=text]#rhyme {
+    background: #eee;
+    background: #c2e5cf;
+}
+#poem input[type=text].poem-line-rhyme {
+    background: #c2e5cf;
+    border: 1px solid #216d65;
+}
+#poem input[type=text]:disabled.poem-line-repeat {
+    background: #c3c2dd;
+    border: 1px solid #505076;
+}
+#poem input#repeat {
+    background: #c3c2dd;
+    border: 1px solid #605ca8;
+}
+#sidebar-list {
+    background: #eee;
+}
+.ghazal-repeat {
+    background: #c3c2dd;
+}
+.ghazal-rhyme {
+    background: #c2e5cf;
+}
+
+.tooltip-inner {
+    background-color: #888;
+}
+.tooltip.left .tooltip-arrow {
+    top: 50%;
+    right: 0;
+    margin-top: -5px;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #888;
+}
+hr {
+	border-top: 1px solid #ccc;
+}
+.couplet {
+    border-bottom: 1px solid #ddd;
+}

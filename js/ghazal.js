@@ -84,7 +84,7 @@ function autoFillRhyme() {
           $(".rhyme-title").append(" for &quot;<strong>" + ($focused.val()) + "</strong>&quot;");
           
           if (rhymeMatches.quality > 1) { // This means "less" quality, where 1 is best 
-            console.log("Not the best rhymes here, yo.");
+          
           }
           
         $.each(rhymeMatches.words, function(k,v) {
@@ -164,7 +164,7 @@ $('#btn-add-couplet').click(function() {
 $('#btn-generate').click(function() {
   
   var lines = [];
-  $('.poem-line').each(function(k,v) {
+  $('#couplets').children().children('.poem-line').each(function(k,v) {
     lines[k] = "";
     $(this).children('input').each(function(l,w){      
       lines[k] += $(this).val() + " ";
