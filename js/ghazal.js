@@ -7,12 +7,10 @@ $.each($('.poem-line'), function() {
 
 $(document).ready(function(){
 
-//setup before functions
-var typingTimer;                //timer identifier
-var autoFillInterval = 250;  //time in ms, 5 second for example
+var typingTimer;
+var autoFillInterval = 250;
 var rhymeMatches = [];
 
-//on keyup, start the countdown
 $('.poem-line-free, .poem-line-first, .poem-line-rhyme').keyup(function(){
     clearTimeout(typingTimer);
     if ($(this).val().length) {
@@ -23,7 +21,6 @@ $('.poem-line-free, .poem-line-first, .poem-line-rhyme').keyup(function(){
     }
 });
 
-//on keydown, clear the countdown 
 $('.poem-line').keydown(function(){
     clearTimeout(typingTimer);
     $('.poem-line').css("border","");
@@ -40,11 +37,9 @@ $('#repeat').keyup(function() {
 });
 $('#repeat').keydown(function() {
     clearTimeout(typingTimer);
-    //$('.poem-line-rhyme').html($('.repeat').val());
 });
 
 function autoFillRepeat() {  
-    //alert($('#repeat').val());
     autoFill();
     $('.poem-line-repeat').val($('#repeat').val())
     $('.poem-line-repeat').data("block-syllables", $('#repeat').data("block-syllables"));
@@ -52,7 +47,6 @@ function autoFillRepeat() {
         .attr('data-original-title', $('#repeat').data("block-syllables"))
         .tooltip('fixTitle')
         .tooltip('show');
-    
 }
 
 $('#rhyme').keyup(function() {
@@ -66,7 +60,6 @@ $('#rhyme').keyup(function() {
 });
 $('#rhyme').keydown(function() {
     clearTimeout(typingTimer);
-    //$('.poem-line-rhyme').html($('.rhyme').val());
 });
 
 function autoFillRhyme() {  
@@ -76,8 +69,6 @@ function autoFillRhyme() {
     $.post( "rhyme-word.php", { word:$focused.val() }, function( data ) {
 
       rhymeMatches = $.parseJSON( data.toLowerCase() );
-      console.log(rhymeMatches);
-      //console.log(rhymeMatches.quality);
       
       if (rhymeMatches && rhymeMatches.words && rhymeMatches.quality && rhymeMatches.quality > 0) {
     
@@ -183,6 +174,7 @@ $('#btn-generate').click(function() {
   $("#my-ghazal .ghazal-title").html($("#poem-title").val());
   $("#my-ghazal .ghazal-author").html("by " + $("#poem-author").val());
   
+  $("#poem-text").empty();
   $(lines).each(function(k,v) {
     if (k % 2) {
       $("#poem-text").children().last().append(v);
@@ -214,32 +206,27 @@ function isEmail(email) {
 
 function savePoem() {
 
-  //var poemData = [];
   poemData = new Object;
   poemData["poem_title"] = $('#poem-title').val();
   poemData["poem_author"] = $('#poem-author').val();
   poemData["poem_email"] = $('#poem-email').val();
   poemData["poem_text"] = $('#poem-text').html();
-  
-  // Create an associate array here -- to send to php, to the db, to the reply block
-  
-  // $.ajax({
-  //   type: "POST",
-  //   data: {poemData:poemData},
-  //   url: "savepoem.php",
-  //   success: function(reply){
-  //     $('#ajax-reply').html(reply);
-  //   }
-  // });
-  
-  
+    
   $.post( "savepoem.php", { poemdata:poemData }, function( data ) {
       
-      $('#ajax-reply').html(data);
+      if (data == 1) {
+        $('#ajax-reply').html("<p class='alert alert-success'>Poem saved!</p>");
+        setTimeout(clearSaveReply, 2000);
+      } else {        
+        $('#ajax-reply').html("<p class='alert alert-danger'>Error saving!  <strong>Please save your poem by hand,</strong> until this is resolved!</p>");
+      }
       
     });
   
-  
+}
+
+function clearSaveReply() {
+  $('#ajax-reply').empty();
 }
 
 });

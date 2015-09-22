@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-xs-8">
                 
-				<h4>Ghazal Generator</h4>
+				<h4>Ghazal Creator</h4>
 								
                 <div id="poem" class="poem" data-num-lines="10" data-num-couplets="5">
 				
@@ -20,7 +20,7 @@
 					<div id="couplets">
 						<div class="couplet" id="couplet-1" data-couplet-no="1">
 							<div class="poem-line" id="line-1" data-line-no="1" data-toggle="tooltip" data-line-syllables="0" title="0">
-								<input type="text" id="poem-line-1" class="line-odd poem-line-first" data-block-syllables="0" />
+								<input type="text" id="poem-line-1" class="line-odd poem-line-free poem-line-first" data-block-syllables="0" />
 								<input type="text" id="rhyme" class="poem-line-rhyme" data-block-syllables="0" />
 								<input type="text" id="repeat" class="poem-line-repeat" data-block-syllables="0" />
 							</div>
@@ -75,7 +75,6 @@
 							</div>
 						</div>
 					</div>
-
 					
                 </div>
 				
