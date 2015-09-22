@@ -155,6 +155,11 @@ hr {
 .has-error #save-email {
 	/*border-width: 2px;*/
 }
+.text-rhyme {
+    background: #c2e5cf;
+    border: 1px solid #216d65;
+	padding: 0 2px;
+}
 
 /* -- Alternate, Light Theme ----------------------------------- */
 

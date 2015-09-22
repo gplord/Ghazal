@@ -101,7 +101,7 @@
             <div id="sidebar" class="col-xs-4 stats-sidebar">
 				<h4 class="rhyme-title">Rhyming Suggestions</h4>
 				<div class="rhyme-suggestions">
-					<div id="rhyme-placeholder"><p>Enter <strong>a single word</strong> into the "Rhyme" box in the first line to receive an auto-generated list of rhymes (if they are available).</p></div>
+					<div id="rhyme-placeholder"><p>Enter <strong>a single word</strong> into the <span class="text-rhyme">Rhyme</span> box in the first line to receive an auto-generated list of rhymes (if they are available).</p></div>
     	            <ul id="sidebar-list"></ul>
 				</div>
             </div>            
